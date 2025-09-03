@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAI-T 特质焦虑量表</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            margin-top: 10px;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .instructions {
+            background: #f8f9ff;
+            border-left: 4px solid #4158D0;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #fafbfc;
+            border-radius: 10px;
+            border: 1px solid #e1e5e9;
+            transition: all 0.3s ease;
+        }
+        
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .question-text {
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 1.05em;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .option label {
+            display: block;
+            padding: 12px 15px;
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .option input[type="radio"] {
+            display: none;
+        }
+        
+        .option input[type="radio"]:checked + label {
+            background: linear-gradient(45deg, #4158D0, #C850C0);
+            color: white;
+            border-color: #4158D0;
+            transform: scale(1.05);
+        }
+        
+        .option label:hover {
+            border-color: #4158D0;
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .score {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .interpretation {
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin-top: 15px;
+        }
+        
+        .progress {
+            width: 100%;
+            height: 6px;
+            background: #e1e5e9;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4158D0, #C850C0);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 600px) {
+            .options {
+                flex-direction: column;
+            }
+            
+            .option {
+                min-width: auto;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>STAI-T 特质焦虑量表</h1>
+            <div class="subtitle">State-Trait Anxiety Inventory - Trait Form</div>
+        </div>
+        
+        <div class="content">
+            <div class="instructions">
+                <h3>填写说明</h3>
+                <p>以下是一些人们用来描述自己的句子。请阅读每一个句子，然后选择最能描述您<strong>最近1-3个月经常感觉如何</strong>的选项。这里没有对错之分，请不要在任何一个句子上花太多时间，但要选择最能描述您在最近1-3个月内一般感觉的答案。</p>
+                <div class="progress">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p id="progressText">进度: 0/20</p>
+            </div>
+            
+            <form id="staiForm">
+                <div class="question">
+                    <div class="question-text">1. 最近1-3个月我经常感到愉快</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q1" value="4" id="q1_1">
+                            <label for="q1_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="3" id="q1_2">
+                            <label for="q1_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="2" id="q1_3">
+                            <label for="q1_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q1" value="1" id="q1_4">
+                            <label for="q1_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">2. 最近1-3个月我经常感到紧张和不安</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q2" value="1" id="q2_1">
+                            <label for="q2_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="2" id="q2_2">
+                            <label for="q2_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="3" id="q2_3">
+                            <label for="q2_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q2" value="4" id="q2_4">
+                            <label for="q2_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">3. 最近1-3个月我经常对自己感到满意</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q3" value="4" id="q3_1">
+                            <label for="q3_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="3" id="q3_2">
+                            <label for="q3_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="2" id="q3_3">
+                            <label for="q3_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q3" value="1" id="q3_4">
+                            <label for="q3_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">4. 最近1-3个月我经常希望我能像其他人一样快乐</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q4" value="1" id="q4_1">
+                            <label for="q4_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q4" value="2" id="q4_2">
+                            <label for="q4_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q4" value="3" id="q4_3">
+                            <label for="q4_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q4" value="4" id="q4_4">
+                            <label for="q4_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">5. 最近1-3个月我经常感到像个失败者</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q5" value="1" id="q5_1">
+                            <label for="q5_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q5" value="2" id="q5_2">
+                            <label for="q5_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q5" value="3" id="q5_3">
+                            <label for="q5_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q5" value="4" id="q5_4">
+                            <label for="q5_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">6. 最近1-3个月我经常感到平静</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q6" value="4" id="q6_1">
+                            <label for="q6_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q6" value="3" id="q6_2">
+                            <label for="q6_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q6" value="2" id="q6_3">
+                            <label for="q6_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q6" value="1" id="q6_4">
+                            <label for="q6_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">7. 最近1-3个月我经常是"冷静、沉着和镇定的"</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q7" value="4" id="q7_1">
+                            <label for="q7_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q7" value="3" id="q7_2">
+                            <label for="q7_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q7" value="2" id="q7_3">
+                            <label for="q7_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q7" value="1" id="q7_4">
+                            <label for="q7_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">8. 最近1-3个月我经常感到困难正在堆积如山，以致我无法克服它们</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q8" value="1" id="q8_1">
+                            <label for="q8_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q8" value="2" id="q8_2">
+                            <label for="q8_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q8" value="3" id="q8_3">
+                            <label for="q8_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q8" value="4" id="q8_4">
+                            <label for="q8_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">9. 最近1-3个月我经常太为一些不重要的事情而烦恼</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q9" value="1" id="q9_1">
+                            <label for="q9_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q9" value="2" id="q9_2">
+                            <label for="q9_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q9" value="3" id="q9_3">
+                            <label for="q9_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q9" value="4" id="q9_4">
+                            <label for="q9_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">10. 最近1-3个月我经常很快乐</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q10" value="4" id="q10_1">
+                            <label for="q10_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q10" value="3" id="q10_2">
+                            <label for="q10_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q10" value="2" id="q10_3">
+                            <label for="q10_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q10" value="1" id="q10_4">
+                            <label for="q10_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">11. 最近1-3个月我经常有烦扰的想法</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q11" value="1" id="q11_1">
+                            <label for="q11_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q11" value="2" id="q11_2">
+                            <label for="q11_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q11" value="3" id="q11_3">
+                            <label for="q11_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q11" value="4" id="q11_4">
+                            <label for="q11_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">12. 最近1-3个月我经常缺乏自信</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q12" value="1" id="q12_1">
+                            <label for="q12_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q12" value="2" id="q12_2">
+                            <label for="q12_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q12" value="3" id="q12_3">
+                            <label for="q12_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q12" value="4" id="q12_4">
+                            <label for="q12_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">13. 最近1-3个月我经常感到安全</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q13" value="4" id="q13_1">
+                            <label for="q13_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q13" value="3" id="q13_2">
+                            <label for="q13_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q13" value="2" id="q13_3">
+                            <label for="q13_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q13" value="1" id="q13_4">
+                            <label for="q13_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">14. 最近1-3个月我经常容易做决定</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q14" value="4" id="q14_1">
+                            <label for="q14_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q14" value="3" id="q14_2">
+                            <label for="q14_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q14" value="2" id="q14_3">
+                            <label for="q14_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q14" value="1" id="q14_4">
+                            <label for="q14_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">15. 最近1-3个月我经常感到不称职</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q15" value="1" id="q15_1">
+                            <label for="q15_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q15" value="2" id="q15_2">
+                            <label for="q15_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q15" value="3" id="q15_3">
+                            <label for="q15_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q15" value="4" id="q15_4">
+                            <label for="q15_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">16. 最近1-3个月我经常很满足</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q16" value="4" id="q16_1">
+                            <label for="q16_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q16" value="3" id="q16_2">
+                            <label for="q16_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q16" value="2" id="q16_3">
+                            <label for="q16_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q16" value="1" id="q16_4">
+                            <label for="q16_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">17. 最近1-3个月一些无关紧要的想法经常经过我的脑海并困扰我</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q17" value="1" id="q17_1">
+                            <label for="q17_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q17" value="2" id="q17_2">
+                            <label for="q17_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q17" value="3" id="q17_3">
+                            <label for="q17_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q17" value="4" id="q17_4">
+                            <label for="q17_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">18. 最近1-3个月我经常把失望看得如此严重，以致无法将它们从脑海中排除</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q18" value="1" id="q18_1">
+                            <label for="q18_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q18" value="2" id="q18_2">
+                            <label for="q18_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q18" value="3" id="q18_3">
+                            <label for="q18_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q18" value="4" id="q18_4">
+                            <label for="q18_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">19. 最近1-3个月我经常是一个稳重的人</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q19" value="4" id="q19_1">
+                            <label for="q19_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q19" value="3" id="q19_2">
+                            <label for="q19_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q19" value="2" id="q19_3">
+                            <label for="q19_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q19" value="1" id="q19_4">
+                            <label for="q19_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">20. 最近1-3个月当我想到近来关心和兴趣的事情时，我经常进入紧张或混乱状态</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" name="q20" value="1" id="q20_1">
+                            <label for="q20_1">几乎从不</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q20" value="2" id="q20_2">
+                            <label for="q20_2">有时</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q20" value="3" id="q20_3">
+                            <label for="q20_3">经常</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" name="q20" value="4" id="q20_4">
+                            <label for="q20_4">几乎总是</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="submit-btn" onclick="calculateScore()">计算分数</button>
+            </form>
+
+            <div id="result" class="result" style="display: none;">
+                <h2>您的STAI-T特质焦虑得分</h2>
+                <div class="score" id="scoreValue"></div>
+                <div class="interpretation" id="interpretation"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 更新进度条
+        function updateProgress() {
+            const totalQuestions = 20;
+            const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progressPercent = (answeredQuestions / totalQuestions) * 100;
+            
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            document.getElementById('progressText').textContent = `进度: ${answeredQuestions}/${totalQuestions}`;
+        }
+
+        // 为所有单选按钮添加事件监听器
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+
+        function calculateScore() {
+            const form = document.getElementById('staiForm');
+            const formData = new FormData(form);
+            
+            // 检查是否所有题目都已回答
+            const totalQuestions = 20;
+            let answeredCount = 0;
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                if (formData.get(`q${i}`)) {
+                    answeredCount++;
+                }
+            }
+            
+            if (answeredCount < totalQuestions) {
+                alert(`请完成所有题目！您还有 ${totalQuestions - answeredCount} 道题目未回答。`);
+                return;
+            }
+            
+            // 计算总分
+            let totalScore = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                const value = parseInt(formData.get(`q${i}`));
+                totalScore += value;
+            }
+            
+            // 显示结果
+            document.getElementById('scoreValue').textContent = totalScore;
+            document.getElementById('result').style.display = 'block';
+            
+            // 解释分数
+            let interpretation = '';
+            if (totalScore <= 36) {
+                interpretation = `
+                    <strong>低特质焦虑水平</strong><br>
+                    您的得分表明您在最近1-3个月通常具有较低的特质焦虑水平。您可能比较冷静、放松，
+                    不太容易被日常压力所困扰。这是一个积极的心理健康指标。
+                `;
+            } else if (totalScore <= 44) {
+                interpretation = `
+                    <strong>中等特质焦虑水平</strong><br>
+                    您的得分在正常范围内。您可能在某些情况下会感到焦虑，
+                    但总体上能够较好地应对生活中的压力和挑战。
+                `;
+            } else if (totalScore <= 54) {
+                interpretation = `
+                    <strong>中等偏高特质焦虑水平</strong><br>
+                    您的得分表明您在最近1-3个月可能比一般人更容易感到焦虑和担忧。
+                    建议学习一些放松技巧和压力管理方法来改善心理状态。
+                `;
+            } else {
+                interpretation = `
+                    <strong>高特质焦虑水平</strong><br>
+                    您的得分表明您在最近1-3个月可能经常感到焦虑、紧张和担忧。
+                    建议寻求专业心理健康支持，学习有效的焦虑管理策略。
+                `;
+            }
+            
+            document.getElementById('interpretation').innerHTML = interpretation;
+            
+            // 滚动到结果区域
+            document.getElementById('result').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+        
+        // 重置问卷
+        function resetQuiz() {
+            document.getElementById('staiForm').reset();
+            document.getElementById('result').style.display = 'none';
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
